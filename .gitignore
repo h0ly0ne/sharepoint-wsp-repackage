@@ -4,4 +4,5 @@
 
 /.vs
 /WSPRepackage/.vs
-/WSPRepackage/bin/Release
+/WSPRepackage/bin
+/WSPRepackage/obj

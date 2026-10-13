@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Deployment.Compression.Cab;
-using Microsoft.Deployment.Compression;
 using System.IO;
 using System.Diagnostics;
 
+using Microsoft.Deployment.Compression.Cab;
+using Microsoft.Deployment.Compression;
 
 namespace WSPRepackage
 {
@@ -23,9 +15,14 @@ namespace WSPRepackage
         public Form1()
         {
             InitializeComponent();
-        }
 
-    
+            var values = Enum.GetValues(typeof(CompressionLevel)).Cast<CompressionLevel>().ToList();
+            cbCompressionLevel.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbCompressionLevel.DataSource = values;
+
+            if (values.Contains(CompressionLevel.Max))
+                cbCompressionLevel.SelectedItem = CompressionLevel.Normal;
+        } 
 
         private void btn_src_Click(object sender, EventArgs e)
         {
@@ -33,7 +30,7 @@ namespace WSPRepackage
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
-                txt_source.Text = folderBrowserDialog1.SelectedPath;
+                tbSourceDirectory.Text = folderBrowserDialog1.SelectedPath;
             }
         }
 
@@ -42,7 +39,7 @@ namespace WSPRepackage
             DialogResult result = folderBrowserDialog1.ShowDialog();
             if (result == DialogResult.OK)
             {
-                txt_output.Text = folderBrowserDialog1.SelectedPath;
+                tbOutputDirectory.Text = folderBrowserDialog1.SelectedPath;
             }
         }
 
@@ -50,13 +47,19 @@ namespace WSPRepackage
         {
             try
             {
-                CabInfo cab = new CabInfo(txt_output.Text + "\\" + txt_wspname.Text + ".wsp");
-                cab.Pack(txt_source.Text, true, Microsoft.Deployment.Compression.CompressionLevel.Max, null);
-                MessageBox.Show(String.Format("WSP created successfully")); 
+                var compression = CompressionLevel.Normal;
+                if (cbCompressionLevel.SelectedItem is CompressionLevel selected)
+                    compression = selected;
+
+                var outputFile = Path.Combine(tbOutputDirectory.Text, tbWSPFilename.Text + ".wsp");
+                var cab = new CabInfo(outputFile);
+                cab.Pack(tbSourceDirectory.Text, true, compression, null);
+
+                MessageBox.Show("WSP created successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information); 
             }
             catch(Exception ex)
             {
-                MessageBox.Show(String.Format("An error as ocurred :(")); 
+                MessageBox.Show($"An error occured: {ex.Message}", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error); 
             }
 
         }
