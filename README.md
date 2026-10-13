@@ -6,4 +6,4 @@ A WSP package is a simple CAB file and it can be opened with any ZIP tool, but u
 
 If you are planning to modify an existent WSP this tool is ideal for you.
 
-![SharePoint WSP Repackage](http://handsontek.net/images/SharePoint/Software/WSP Repackage.png) 
+<img width="521" height="293" alt="image" src="https://github.com/user-attachments/assets/224c1c62-acae-4aca-a7e7-49e1f3d8d9e0" />
